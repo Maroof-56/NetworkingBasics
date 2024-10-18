@@ -42,7 +42,7 @@ b3b12ff1232a   rastasheep/ubuntu-sshd:18.04   "/usr/sbin/sshd -D"     12 seconds
 
     4.Connect to remote server ( In this case remote server is on my computer not on another computer thats y below command is used ) 
     
-      - ssh root@localhost -p 2222  ( below is the breakdown ) 
+      - ssh root@localhost -p 2222  ( below is the breakdown )  | ssh -p 2222 root@localhost
       
       
        ssh: This is the command to start an SSH connection.
