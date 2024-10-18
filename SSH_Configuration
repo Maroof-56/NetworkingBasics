@@ -1,0 +1,101 @@
+
+ SSH CONFIGURATION
+ 
+  
+  1. For Remote server we r using docker container 
+  
+     sudo apt install docker.io   ( If not install ) 
+     systemctl status docker      ( inactive it wil show )
+     systemctl start docker       ( to activate ) 
+     
+     
+  2. Create a docker container 
+  
+     - docker run -d --name remote_server -p 2222:22 -e TZ=Etc/UTC -e "SSHD=true" rastasheep/ubuntu-sshd:18.04 
+     
+      Above is the command to create conatiner in docker , below is the breakdown of command 
+      
+      docker run  - Command to create & start new docker container
+       -d         - means detached mode , here it means the container will run in background mode , if it will run in foreground it will block terminal & we cant use it 
+
+     --name       - name u want to give ( here remote_serrver is the name of theb container )
+     
+     -p 2222:22   - -p specifies port, 2222 is the temporary port of local machine that is map with port 22 of docker container       
+                   - When you specify -p 2222:22, you are telling Docker to open port 2222 on your computer (host) and forward traffic to port 22 inside the container.
+ (means 2222 will open in docker & docker forward to container port 22 )                    
+ 
+      -e TZ=Etc/UTC   - specify set an Environment variable The Time Zone TZ inside the container to ETC/UTC, ensure container uses the UTC for time 
+      
+      -e "SSHD=true"   - This environment variable is used to tell the container's startup process to run the SSH daemon (sshd). In this case, the image rastasheep/ubuntu-sshd:18.04 looks for this variable to know if it should start the SSH service when the container runs.
+      18.04             - specifies the ubuntu version that img is using 
+      
+      
+    3. To check that container is running
+       
+       - docker ps 
+       
+       -  Output of command 
+       
+          CONTAINER ID   IMAGE                          COMMAND               CREATED          STATUS          PORTS                            NAMES
+b3b12ff1232a   rastasheep/ubuntu-sshd:18.04   "/usr/sbin/sshd -D"     12 seconds ago  Up 11 seconds  0.0.0.0:3333->22/tcp, :::3333->22/tcp    remote_server
+
+
+    4.Connect to remote server ( In this case remote server is on my computer not on another computer thats y below command is used ) 
+    
+      - ssh root@localhost -p 2222  ( below is the breakdown ) 
+      
+      
+       ssh: This is the command to start an SSH connection.
+
+       root:- This is the username inside the container.
+       
+            - The Docker image you're using (rastasheep/ubuntu-sshd) likely defaults  to the root user. If there's another user set up, you would replace root with that username.
+
+       localhost: - This is the address of your own computer (host).
+                  - localhost refers to your machine itself, and in this case, it means you are accessing a service running on your own machine.
+                  
+       
+       - After this command u will ask for fingerprint types yes & for password type root &  it will login successfully 
+       
+       - When you type ssh root@localhost -p 2222, you're telling the SSH server to log you in as the root user.
+       
+       - The server prompts for the password of the root user.
+       
+       - The default password for the root user in many images like this is set to root. ( many images in docker password is root coz u r accesing it as root  , YOU CAN CHANGE IT AFTER LOGIN->PASSWD)
+       
+       
+       5. Why Not ssh user@IP/port?   ( OPTIONAL - Read Only In This Case  ) 
+       
+          - when you connect to a remote machine, you use user@IP_address because the server is on a different computer, and the IP is needed to reach it.
+          
+          
+       6. Generate the ssh key pair 
+       
+          - Switch to your locaal machine - exit 
+          
+          - ssh-keygen -t rsa -b 4096  ( type & pres enter enter ) 
+          
+            -t rsa: This specifies the type of key to create, in this case, RSA.
+            -b 4096: This sets the number of bits in the key. A higher number means a more secure key, and 4096 is a good standard.
+            
+            
+       7. Copy Public key to docker container 
+       
+          - ssh-copy-id -p 3333 root@localhost ( press enter & for password type root )
+          
+          - Ouput of successfull
+          
+            /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+root@localhost's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh -p 3333 'root@localhost'"
+and check to make sure that only the key(s) you wanted were added.
+
+       8. Login without passwword 
+       
+          - ssh -p port_number root@localhost 
+          
+
