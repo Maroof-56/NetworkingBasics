@@ -1,0 +1,61 @@
+
+
+   Create a simple automated backup system that regularly backs up important files from a source directory to a destination directory (e.g., an external drive or a backup folder), compresses them, and maintains a log of backups.
+   
+   
+   1. Create Backupscript fille
+   
+   
+ #!/usr/bin/bash
+
+SOURCE="/home/maroof-56/Documents/Networking"
+DESTINATION="/home/maroof-56/Documents/Networking_backup"
+
+
+rsync -av  --delete $SOURCE $DESTINATION
+
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+
+tar -czvf /home/maroof-56/Documents/Networking_backup_backup_$TIMESTAMP.tar.gz /home/maroof-56/Documents/Networking_backup
+
+
+echo "Backup completed on $TIMESTAMP" >> /var/log/backup.log
+
+
+      Explanation : 
+      
+       - rsync -av --delete $SOURCE $DESTINATION
+       
+         If a file exists in the source but not in the destination, it will be copied to the destination.
+         If a file exists in the destination but not in the source (because you deleted it from the source), rsync will delete that file in the destination as well, to keep both locations identical.
+         
+         
+       - tar -czvf /home/maroof-56/Documents/Networking_backup_backup_$TIMESTAMP.tar.gz /home/maroof-56/Documents/Networking_backup
+
+         This creates a compressed .tar.gz file of the backup, with a filename that includes the current date and time.
+         
+         
+       - This logs the date and time of the backup to a file (/var/log/backup.log).
+       
+       
+   2. Automate the Script with Cron
+   
+       - crontab -e 
+       
+         */2 * * * * /home/maroof-56/backup_script.sh
+         (Run the script after every 2 minutes)
+         
+       
+   3.How to Test It
+   
+       - ./backup_script.sh
+
+        
+   4. To verify it is running 
+   
+      ls /path/to/folder
+      
+   5. To stop cron task 
+    
+      -open crontab 
+        - crontab -e ( comment the timeline)
