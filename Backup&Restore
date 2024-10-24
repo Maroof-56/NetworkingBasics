@@ -1,0 +1,182 @@
+
+ Backup & retsore 
+ 
+       (rsync , tar , cron )
+       
+      
+   RSYNC 
+   
+      A utility for efficiently transferring & synchronizing files across different system or location 
+      
+      It known for its speed , flxibility,& efficiency
+      
+     
+   FEATURES 
+      
+      Optimize file tranfer by sending only the changes made & ensure that file permisssion,ownership and timestamp are preserved.(like update changes to file not whole file it send  again)
+      
+      
+   SYNTAX 
+   
+    - rsync options source detination
+      
+   OPTIONS
+   
+       - -a or --archive for archiving file
+       - -v or --verbose for verbose output
+       - -z or --compress for compression
+       - --progress to show  progress during transfer
+       - -b taking backup before delete
+       - -d delete files before copying
+       - --backup-dir=/tmp/ 
+       
+       
+---------------------------------------------------------------------------------------------
+
+   RSYNC within same machine
+   
+       transfer 1 file from folder to another folder 
+       
+        - rsync -a /home/user-name/folder/file  /home/user-name/folder
+        
+        
+       Excluding Files/Directories
+       
+         -- exclude='pattern': Exclude certain files from the transfer.
+         -- exclude-from=file.txt: Exclude files listed in file.txt.
+       
+         EX: - rsync -av --exclude='*.log' /source/ /destination/   (This command excludes all .log files.)
+         
+        
+        Backup Options: Use --backup and --backup-dir to create backups of files
+        
+          - rsync -av --backup --backup-dir=/backup/ /source/ /destination/
+
+
+----------------------*********----------------------------------------------------------------*********-----------------------
+
+
+   GZIP & UNZIP   ( To compress file only )
+   
+      gzip file-name   (to compress)
+      gunzip file-name (to uncompress)
+      
+   
+   
+   TAR  ( To compress folder ) 
+   
+      - first to convert into .tar format & then compress the folder 
+      
+      - 1.tar -cvf folder.tar folder/
+      
+        -c: Create a new tarball.
+        -v: Verbosely list files processed. (optional , to show the process)
+        -f: Specify the filename of the archive.
+        
+      - 2.gzip folder.tar
+       
+      - 3. In One Line 
+      
+          - tar -czvf folder.tar.gz folder
+          
+          
+     ( To decompress the folder )
+         
+         
+      -  1.xtract the  folder first 
+      
+         - tar -xvf folder.tar.gz 
+         
+      -  2. tar -xzvf folder.tar.gz ( I one line z should be after x)
+   
+     ( To read tar folder ) 
+     
+       - tar -tzvf folder.tar.gz  ( to read what inside tar  folder ) 
+       
+     ( To read compress file ) 
+     
+       - zcat file.zip
+       
+      Compress multiple files ( easiest way but tar i widely use )
+       
+         - zip files.zip file1 file2 file3   (files.zip k ander 3 o file zip ho jaegi)
+
+         - unzip files.zip  (  To decompress ) 
+         
+         
+----------------------*********----------------------------------------------------------------*********-----------------------
+
+
+   CRON  JOB 
+   
+       A cron job is a schedule task that allow you to run schedule task or command at specifies intervals.
+   
+     why use cron jobs
+     
+       cron jobs  automate repetitive task,ensuring thet run at scheduled timesout manual intervention
+         EX: backup files , runnning system maintenance , or sending email reports.
+       
+     How does cron work 
+      
+       Cron uses a daemon(a background process) called cron to execcute schedule task.
+       
+       The configuration file for these task is stored in a file called crontab 
+       
+       Name of the service is : cron
+       
+     Syntax 
+       
+       - crontab -e ( command to edit crontab)
+       - crontab -l (to view/list current cron jobs)
+       - crontab -r (remove all the jobs)
+       
+     Format of cron job
+     
+       - * * * * * /usr/bin/python /path/to/task.py 
+       
+       - minutes hours dayOfMonth(DOM) month dayOfWeek(DOW) command
+       
+         - minutes (0-59)
+         - hours (0-23)
+         - DOM (1-31)
+         - Month (1-12)
+         - DOW (0-7) (sunday - 0 & 7 )
+         
+        - min hrs date mon week
+        
+        To know more - go on cron guru for better understanding.
+        
+        
+      Exercise 
+      
+      
+       Created a folder & file within that folder .sh file
+       
+         Content of .sh file
+         
+         #!/usr/bin/bash
+
+         FILEPATH="/home/maroof-56/cron"
+         /usr/bin/touch $FILEPATH/testfile
+
+         echo "Cron job sample file" > $FILEPATH/testfile
+         
+         It will create file when script run 
+        
+       Now creata a crontab to automate this script - crontab -e 
+       
+         Content of crontab 
+         
+         * * * * * /home/maroof-56/cron/create_file.sh
+         
+         Every minute it will create file 
+
+      SPECIAL STRING IN CRON
+        
+         Using @reboot,@daily,@hourly etc for easy scheduling
+         Ex: @reboot/path/to/script  ( runni a script at reboot)
+         
+      Redirect output of a task
+      
+         ***** /bin/some/dir > /tmp/listing.txt 2>&1
+       
